@@ -1,67 +1,44 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:language/language.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'HomeScreen.dart';
+import 'MenuScreen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  runApp(EasyLocalization(
+      supportedLocales: [Locale("en"), Locale("ta")],
+      path: "assets/translation",
+      fallbackLocale: Locale("en"),
+      child: homepage()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class homepage extends StatelessWidget {
+  const homepage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final DrawerController = ZoomDrawerController();
+
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      debugShowCheckedModeBanner: false,
+      supportedLocales: context.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
+      locale: context.locale,
+      home: ZoomDrawer(
+          controller: DrawerController,
+          style: DrawerStyle.Style1,
+          menuScreen: MenuScreen(),
+          mainScreen: HomeScreen(DrawerController),
+          borderRadius: 40.0,
+          showShadow: true,
+          angle: 0.0,
+          backgroundColor: Colors.grey[300]!,
+          openCurve: Curves.slowMiddle,
+          closeCurve: Curves.decelerate),
     );
   }
 }
